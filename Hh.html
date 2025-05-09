@@ -80,13 +80,52 @@
         opacity: 1;
       }
     }
+
+    /* Custom Alert Styles */
+    .custom-alert {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .custom-alert-box {
+      background: #111;
+      border: 2px solid #00ffc3;
+      border-radius: 12px;
+      padding: 20px 30px;
+      text-align: center;
+      box-shadow: 0 0 12px #00ffc3;
+    }
+
+    .custom-alert-box h2 {
+      color: #00ffc3;
+      margin-bottom: 10px;
+    }
+
+    .custom-alert-box p {
+      margin-bottom: 20px;
+    }
+
+    .custom-alert-box button {
+      background: #00ffc3;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #000;
+    }
   </style>
 </head>
 <body>
   <h1>FIND IT BRO BOT</h1>
 
   <input type="text" id="seedInput" placeholder="Enter your seed..." required>
-  <button onclick="generateGrid()">Generate Grid</button>
+  <button onclick="generateGrid(event)">Generate Grid</button>
 
   <div class="loading" id="loadingText">Please wait... your Grid is preparing</div>
 
@@ -95,30 +134,39 @@
 
   <p><center>Enter The seed as the same which you entered in bot</center></p>
 
-  <script>
-    // Get the seed from URL query parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const storedSeed = urlParams.get("seed"); // The seed stored by the bot
+  <!-- Custom Alert HTML -->
+  <div id="customAlert" class="custom-alert">
+    <div class="custom-alert-box">
+      <h2>Find The Mines Bot Says...</h2>
+      <p id="alertMessage"></p>
+      <button onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
 
-    function generateGrid() {
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const storedSeed = urlParams.get("seed");
+
+    if (storedSeed) {
+      document.getElementById("seedInput").value = storedSeed;
+    }
+
+    function generateGrid(event) {
       const seed = document.getElementById("seedInput").value.trim();
 
-      // Check if the entered seed matches the stored seed
       if (!seed) {
-        alert("Please enter a seed!");
+        showCustomAlert("Please enter a seed!");
         return;
       }
 
       if (seed !== storedSeed) {
-        alert("❌ Incorrect seed. Please enter the correct seed.");
+        showCustomAlert("❌ Incorrect seed. Please enter the correct seed.");
         return;
       }
 
-      // Hide input and button
       document.getElementById("seedInput").style.display = "none";
       event.target.style.display = "none";
 
-      // Show loading text
       const loading = document.getElementById("loadingText");
       loading.style.display = "block";
 
@@ -157,9 +205,8 @@
         link.href = canvas.toDataURL("image/png");
         link.style.display = "block";
 
-        // Hide loading
         loading.style.display = "none";
-      }, 1200); // simulate delay
+      }, 1200);
     }
 
     function hashSeed(str) {
@@ -179,12 +226,15 @@
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       };
     }
-    URLSearchParams(window.location.search);
-  const seedFromURL = urlParams.get("seed");
 
-  if (seedFromURL) {
-    document.getElementById("seedInput").value = seedFromURL;
-  }
+    function showCustomAlert(message) {
+      document.getElementById("alertMessage").innerText = message;
+      document.getElementById("customAlert").style.display = "flex";
+    }
+
+    function closeCustomAlert() {
+      document.getElementById("customAlert").style.display = "none";
+    }
   </script>
 </body>
 </html>
