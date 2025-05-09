@@ -179,6 +179,12 @@
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       };
     }
+    URLSearchParams(window.location.search);
+  const seedFromURL = urlParams.get("seed");
+
+  if (seedFromURL) {
+    document.getElementById("seedInput").value = seedFromURL;
+  }
   </script>
 </body>
 </html>
